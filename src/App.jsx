@@ -13,11 +13,15 @@ import ContactPage from "./ContactPage";
 import HomePage from "./HomePage";
 import RegisterPage from "./RegisterPage";
 
+// flash message
+import FlashMessageDisplay from "./FlashMessageDisplay";
+
 export default function App() {
 
   return <>
 
     <Navbar/>
+    <FlashMessageDisplay/>
 
     <Switch>
       <Route path="/" component={HomePage}/>

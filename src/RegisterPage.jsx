@@ -1,5 +1,7 @@
 import React from "react";
 import { Formik, Field, Form, ErrorMessage } from 'formik';
+import { useLocation } from 'wouter'
+import { useFlashMessage } from "./FlashMessageStore";
 
 // import everything from yup
 import * as Yup from "yup";
@@ -9,13 +11,18 @@ const validationSchema = Yup.object({
     "name": Yup.string().required("Name is required"),
     "email": Yup.string().email().required(),
     "password": Yup.string().min(8).required(),
-    "confirmPassword": Yup.string().oneOf([Yup.ref("password"), "null"]).required("Please re-enter your password again"),
+    "confirmPassword": Yup.string().oneOf([Yup.ref("password"), null]).required("Please re-enter your password again"),
     "salutation": Yup.string().required(),
     "country": Yup.string().required()
 
 })
 
 export default function RegisterPage() {
+
+    const [, setLocation] = useLocation();
+
+    // import the functions from flashMessageStore
+    const { showMessage } = useFlashMessage();
 
     // handles the form submission
     // have to specify it as the submission handler Formik
@@ -27,6 +34,8 @@ export default function RegisterPage() {
             // after 3 seconds, set the form as finished submitting
             // to simulate as if we had finished processing the form
             formikHelper.setSubmitting(false);
+            showMessage("Your account has been created successful", "success");
+            setLocation("/");
         }, 3000)
     }
 

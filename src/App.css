@@ -2,3 +2,38 @@
     height: 200px;
     object-fit: cover;
 }
+
+.flash-alert {
+    position: fixed;
+    top: 5px;
+    left: 10px;
+    width: calc(99vw - 20px);
+    z-index: 100;
+    /* Fixed: z-index should not have 'px' */
+    animation: slideDown 5s ease-out;
+}
+
+@keyframes slideDown {
+    0% {
+        top: -100px;
+        /* Start off-screen above */
+        opacity: 0;
+    }
+
+    30% {
+        top: 5px;
+        /* End at final position */
+        opacity: 1;
+    }
+
+    60% {
+        top: 5px;
+        /* End at final position */
+        opacity: 1;
+    }
+
+    100% {
+        top: -100px;
+        opacity: 0;
+    }
+}
