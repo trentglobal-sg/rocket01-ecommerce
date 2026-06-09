@@ -11,6 +11,7 @@ import ProductPage from "./ProductPage";
 import AboutPage from "./AboutPage";
 import ContactPage from "./ContactPage";
 import HomePage from "./HomePage";
+import RegisterPage from "./RegisterPage";
 
 export default function App() {
 
@@ -23,6 +24,7 @@ export default function App() {
       <Route path="/products" component={ProductPage}/>
       <Route path="/about-us" component={AboutPage}/>
       <Route path="/contact-us" component={ContactPage}/>
+      <Route path="/register" component={RegisterPage}/>
     </Switch>
   
 
