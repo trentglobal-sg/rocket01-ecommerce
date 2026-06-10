@@ -3,11 +3,13 @@ import axios from "axios";
 
 import ProductCard from "./ProductCard";
 import { useCart } from "./CartStore";
+import { useFlashMessage } from "./FlashMessageStore";
 
 export default function ProductPage() {
 
     const [products, setProducts] = useState([]);
     const {addToCart} = useCart();
+    const {showMessage} = useFlashMessage();
 
     useEffect(()=>{
         const fetchProducts = async () => {
@@ -30,6 +32,8 @@ export default function ProductPage() {
                                 imageUrl={p.imageUrl}
                                 onAddToCart={()=>{
                                     addToCart(p);
+                                    showMessage(`${p.name} has been added to the shopping cart`)
+                                    
                                 }}
                             />
                         </div>

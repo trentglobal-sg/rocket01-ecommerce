@@ -12,7 +12,7 @@ import AboutPage from "./AboutPage";
 import ContactPage from "./ContactPage";
 import HomePage from "./HomePage";
 import RegisterPage from "./RegisterPage";
-import ShoppingCartPage from "./ShoppingCart.Page";
+import ShoppingCartPage from "./ShoppingCartPage";
 
 // flash message
 import FlashMessageDisplay from "./FlashMessageDisplay";

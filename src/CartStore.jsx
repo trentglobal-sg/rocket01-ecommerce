@@ -51,5 +51,22 @@ export const useCart = () => {
 
     }
 
-    return { cart, getCartTotal, addToCart }
+    const removeFromCart = (productId) => {
+        const indexToRemove = cart.findIndex(p => p.id === productId);
+        const cloned = cart.toSpliced(indexToRemove, 1);
+        setCart(cloned);
+
+    }
+
+    const updateQuantity = (productId, newQuantity) => {
+        const cartItemIndex = cart.findIndex( cartItem => cartItem.product_id === productId);
+
+        const clonedCartItem = {...cart[cartItemIndex], quantity: newQuantity};
+
+        const clonedCart = cart.with(cartItemIndex, clonedCartItem);
+
+        setCart(clonedCart);
+    }
+
+    return { cart, getCartTotal, addToCart, removeFromCart, updateQuantity }
 }
