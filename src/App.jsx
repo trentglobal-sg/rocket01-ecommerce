@@ -12,6 +12,7 @@ import AboutPage from "./AboutPage";
 import ContactPage from "./ContactPage";
 import HomePage from "./HomePage";
 import RegisterPage from "./RegisterPage";
+import ShoppingCartPage from "./ShoppingCart.Page";
 
 // flash message
 import FlashMessageDisplay from "./FlashMessageDisplay";
@@ -29,6 +30,7 @@ export default function App() {
       <Route path="/about-us" component={AboutPage}/>
       <Route path="/contact-us" component={ContactPage}/>
       <Route path="/register" component={RegisterPage}/>
+      <Route path="/cart" component={ShoppingCartPage}/>
     </Switch>
   
 
