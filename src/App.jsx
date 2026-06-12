@@ -13,6 +13,8 @@ import ContactPage from "./ContactPage";
 import HomePage from "./HomePage";
 import RegisterPage from "./RegisterPage";
 import ShoppingCartPage from "./ShoppingCartPage";
+import UserLogin from "./UserLogin";
+import Profile from "./Profile";
 
 // flash message
 import FlashMessageDisplay from "./FlashMessageDisplay";
@@ -31,6 +33,8 @@ export default function App() {
       <Route path="/contact-us" component={ContactPage}/>
       <Route path="/register" component={RegisterPage}/>
       <Route path="/cart" component={ShoppingCartPage}/>
+      <Route path="/login" component={UserLogin}/>
+      <Route path="/profile" component={Profile}/>
     </Switch>
   
 

@@ -1,62 +1,84 @@
-import React from "react";
-import { Formik, Field, Form, ErrorMessage } from 'formik';
-import { useLocation } from 'wouter'
-import { useFlashMessage } from "./FlashMessageStore";
-
-// import everything from yup
-import * as Yup from "yup";
-import axios from "axios";
+import axios from 'axios';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { useJwt } from './UserStore';
+import { useFlashMessage } from './FlashMessageStore';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'wouter';
 
 // create a validation schema
 const validationSchema = Yup.object({
     "name": Yup.string().required("Name is required"),
     "email": Yup.string().email().required(),
-    "password": Yup.string().min(8).required(),
-    "confirmPassword": Yup.string().oneOf([Yup.ref("password"), null]).required("Please re-enter your password again"),
     "salutation": Yup.string().required(),
     "country": Yup.string().required()
 
 })
 
-export default function RegisterPage() {
+export default function Profile() {
 
+    const { getJwt } = useJwt();
+    const [initialValues, setInitialValues] = useState({});
+    const { showMessage } = useFlashMessage();
     const [, setLocation] = useLocation();
 
-    // import the functions from flashMessageStore
-    const { showMessage } = useFlashMessage();
+    useEffect(() => {
 
-    // handles the form submission
-    // have to specify it as the submission handler Formik
-    // the second argument of handleSubmit is a formikHelper
+        // 1. get the JWT
+        const token = getJwt();
+
+        if (token) {
+            // 2. get the user's profile 
+            const fetchUser = async () => {
+                const response = await axios.get(import.meta.env.VITE_API_URL + "/api/users/me", {
+                    headers: {
+                        Authorization: "Bearer " + token
+                    }
+                });
+
+                setInitialValues(response.data.user);
+            }
+            fetchUser();
+
+        } else {
+            showMessage("You need to log in", "danger");
+            setLocation("/login");
+        }
+
+    }, [])
+
     const handleSubmit = async (values, formikHelper) => {
         console.log(values);
-        // todo: axios call to register the user
-        const response = await axios.post(
-            import.meta.env.VITE_API_URL + "/api/users", values);
-        formikHelper.setSubmitting(false);
-        showMessage("Your account has been created successful", "success");
-        setLocation("/");
+        try {
+            const token = getJwt();
+            if (!token) {
+                showMessage("You must be logged in to update your profile", "danger");
+                formikHelper.setSubmitting(false);
+                return;
+            }
 
-    }
+            await axios.put(import.meta.env.VITE_API_URL+"/api/users/me", values, {
+                headers: {
+                    Authorization: "Bearer " + token
+                }
+            });
+            showMessage("Profile updated successfully", "success");
 
-    const initialValues = {
-        "name": "",
-        "email": "",
-        "password": "",
-        "confirmPassword": "",
-        "salutation": "",
-        "marketingPreferences": [],
-        "country": ""
+        } catch (e) {
+            console.error(e);
+            showMessage("Error: " + e.message, "danger");
+        }
     }
 
     return <>
         <div className="container mt-5">
 
-            <h1>Register</h1>
+            <h1>Update Profile</h1>
             <Formik
                 onSubmit={handleSubmit}
                 initialValues={initialValues}
                 validationSchema={validationSchema}
+                enableReinitialize
             >
                 {
                     (formik) => (
@@ -89,34 +111,7 @@ export default function RegisterPage() {
                                     className="text-danger"
                                 />
                             </div>
-                            <div className="mb-3">
-                                <label>Password:</label>
-                                <Field
-                                    type="password"
-                                    className="form-control"
-                                    id="password"
-                                    name="password"
-                                />
-                                <ErrorMessage
-                                    name="password"
-                                    component="div"
-                                    className="text-danger"
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label>Confirm Password:</label>
-                                <Field
-                                    type="password"
-                                    className="form-control"
-                                    id="confirmPassword"
-                                    name="confirmPassword"
-                                />
-                                <ErrorMessage
-                                    name="confirmPassword"
-                                    component="div"
-                                    className="text-danger"
-                                />
-                            </div>
+                          
 
                             <div className="mb-3">
                                 <label className="form-label">Salutation</label>
@@ -207,10 +202,8 @@ export default function RegisterPage() {
                                     className="text-danger"
                                 />
                             </div>
-
-
-                            <button type="submit" disabled={formik.isSubmitting}>
-                                Register
+                            <button type="submit">
+                                Update
                             </button>
                         </Form>
                     )

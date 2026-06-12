@@ -1,8 +1,16 @@
+import axios from "axios";
 import { useCart } from "./CartStore";
+import { useEffect } from "react";
+import { useJwt } from "./UserStore";
 
 export default function ShoppingCartPage() {
 
-    const { cart, getCartTotal, removeFromCart, updateQuantity } = useCart();
+    const { cart, getCartTotal, removeFromCart, updateQuantity, fetchCart } = useCart();
+    const { getJwt } = useJwt();
+
+    useEffect(() => {
+        fetchCart();
+    }, []);
 
     return <>
         <div className="container mt-4">
@@ -20,14 +28,14 @@ export default function ShoppingCartPage() {
 
                             <div>
                                 <button className="btn btn-success btn-sm m-2"
-                                    onClick={()=>{
+                                    onClick={() => {
                                         updateQuantity(item.product_id, item.quantity - 1)
                                     }}
                                     disabled={item.quantity == 1}
-                                
+
                                 >-</button>
                                 <span className="m-2">Quantity: {item.quantity}</span>
-                                <button className="btn btn-success btn-sm m-2" onClick={()=>{
+                                <button className="btn btn-success btn-sm m-2" onClick={() => {
                                     updateQuantity(item.product_id, item.quantity + 1)
                                 }}>+</button>
                             </div>
@@ -48,7 +56,19 @@ export default function ShoppingCartPage() {
             <div className="mt-3 mb-3 text-end">
                 <h4>Total: ${getCartTotal()}</h4>
             </div>
+            <button className="btn btn-primary btn-lg mb-3" onClick={async () => {
+                const jwt = getJwt();
+                const response = await axios.post(import.meta.env.VITE_API_URL + "/api/checkout", {}, {
+                    headers: {
+                        Authorization: "Bearer " + jwt
+                    }
+                })
+                window.location = response.data.session.url;
+            }}>Checkout</button>
         </div>
+
+
+
 
     </>
 }

@@ -13,8 +13,8 @@ export default function ProductPage() {
 
     useEffect(()=>{
         const fetchProducts = async () => {
-            const response = await axios.get("products.json");
-            setProducts(response.data);
+            const response = await axios.get(import.meta.env.VITE_API_URL+"/api/products");
+            setProducts(response.data.products);
         }
         fetchProducts();
     },[])
